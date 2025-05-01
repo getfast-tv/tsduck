@@ -208,7 +208,7 @@ int MainCode(int argc, char *argv[])
         }
     }
 
-    opt.info(u"%'d packets read, %'d packets updated", generator.totalPackets(), generator.fixCount());
+    opt.verbose(u"%'d packets read, %'d packets updated", generator.totalPackets(), generator.fixCount());
 
     opt.file.close();
 
