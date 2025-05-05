@@ -25,7 +25,6 @@ ts::ContinuityGenerator::ContinuityGenerator(const PIDInitialCCMap& initialCc, R
     }
 }
 
-
 //----------------------------------------------------------------------------
 // Change the output device to report errors.
 //----------------------------------------------------------------------------
@@ -65,35 +64,19 @@ uint8_t ts::ContinuityGenerator::lastCC(PID pid) const
 }
 
 //----------------------------------------------------------------------------
-// Build the first part of an error message.
+// Log the last CC for each PID
 //----------------------------------------------------------------------------
 
-ts::UString ts::ContinuityGenerator::linePrefix(PID pid) const
+void ts::ContinuityGenerator::logLastCC() const
 {
-    return UString::Format(u"%spacket index: %'d, PID: %n", _prefix, _total_packets, pid);
-}
-
-//----------------------------------------------------------------------------
-// Log a JSON message.
-//----------------------------------------------------------------------------
-
-void ts::ContinuityGenerator::logJSON(PID pid, const UChar* type, size_t packet_count)
-{
-    json::Object root;
-    root.add(u"index", _total_packets);
-    root.add(u"pid", pid);
-    root.add(u"type", type);
-    if (packet_count != NPOS) {
-        root.add(u"packets", packet_count);
+    for (const auto& [pid, state] : _pid_states) {
+        _report->info(u"pid: %d, last_cc: %d", pid, state.last_cc_out);
     }
-    _report->log(_severity, _prefix + root.oneLiner(*_report));
-}
-
+}   
 
 //----------------------------------------------------------------------------
-// Detect / fix error on packet.
+// Generate a smooth stream
 //----------------------------------------------------------------------------
-
 bool ts::ContinuityGenerator::feedPacketInternal(TSPacket* pkt, bool update)
 {
     assert(pkt != nullptr);

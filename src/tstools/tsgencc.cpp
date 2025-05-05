@@ -154,10 +154,6 @@ int MainCode(int argc, char *argv[])
 
     ts::ContinuityGenerator generator(initialCc, &opt);
 
-    // Configure the CC analyzer.
-    generator.setDisplay(true);
-    generator.setMessageSeverity(opt.test ? ts::Severity::Info : ts::Severity::Verbose);
-
     // Open file in read/write mode (CC are overwritten)
     std::ios::openmode mode = std::ios::in | std::ios::binary;
     if (!opt.test) {
@@ -208,7 +204,10 @@ int MainCode(int argc, char *argv[])
         }
     }
 
-    opt.verbose(u"%'d packets read, %'d packets updated", generator.totalPackets(), generator.fixCount());
+    // Print the last_cc for each pid
+    generator.logLastCC();
+
+    //opt.verbose(u"%'d packets read, %'d packets updated", generator.totalPackets(), generator.fixCount());
 
     opt.file.close();
 

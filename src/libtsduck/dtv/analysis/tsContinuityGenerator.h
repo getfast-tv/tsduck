@@ -100,33 +100,6 @@ namespace ts {
         void setReport(Report* report);
 
         //!
-        //! Change error reporting.
-        //! @param [in] display When true, display discontinuity errors.
-        //!
-        void setDisplay(bool display) { _display_errors = display; }
-
-        //!
-        //! Define the severity of messages.
-        //! The default severity is Severity::Info.
-        //! @param [in] level The severity of each message.
-        //!
-        void setMessageSeverity(int level) { _severity = level; }
-
-        //!
-        //! Define a prefix string to be displayed with each message.
-        //! @param [in] prefix The prefix string to be displayed with each message.
-        //!
-        void setMessagePrefix(const UString& prefix) { _prefix = prefix; }
-
-        //!
-        //! Specify to log messages in JSON format.
-        //! If a message prefix is set, it is logged just before the JSON structure
-        //! and can be used to locate the appropriate JSON messages in a flow of logs.
-        //! @param [in] on Set the JSON mode on or off.
-        //!
-        void setJSON(bool on) { _json = on; }
-
-        //!
         //! Get the first CC in a PID.
         //! @param [in] pid The PID to check.
         //! @return The first CC value in the PID or ts::INVALID_CC when the PID is not filtered.
@@ -141,6 +114,11 @@ namespace ts {
         //! This is the output CC value, possibly modified.
         //!
         uint8_t lastCC(PID pid) const;
+
+        //!
+        //! Log the last CC for each PID.
+        //!
+        void logLastCC() const;
 
     private:
         // PID generation state
@@ -157,10 +135,6 @@ namespace ts {
 
         // Private members.
         Report*       _report;                    // Where to report errors, never null.
-        int           _severity = Severity::Info; // Severity level for error messages.
-        bool          _display_errors = false;    // Display discontinuity errors.
-        bool          _json = false;              // Log JSON messages.
-        UString       _prefix {};                 // Message prefix.
         PacketCounter _total_packets = 0;         // Total number of packets.
         PacketCounter _processed_packets = 0;     // Number of processed packets.
         PacketCounter _fix_count = 0;             // Number of fixed (modified) packets.
